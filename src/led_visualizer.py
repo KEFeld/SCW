@@ -1,7 +1,6 @@
 from vispy import app, scene
 from .led_matrix import LEDMatrix
 
-
 class LEDVisualizer:
     def __init__(self):
         # Create the LED matrix
