@@ -2,7 +2,7 @@ import numpy as np
 
 # Geometric Parameters
 BASE_RADIUS = 5              # Base radius
-HEIGHT = 10                  # Height of the spiral
+HEIGHT = 8                  # Height of the spiral
 MAX_ROTATION_ANGLE = 8 * np.pi  # Total angle range (number of turns)
 NUM_POINTS = 2000            # Resolution
 CYLINDER_RADIUS = BASE_RADIUS * 0.2  # Radius of inner cylinder

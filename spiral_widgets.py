@@ -5,6 +5,26 @@ from spiral_constants import *
 from spiral_utils import draw_complete_spiral, style_plot
 import time
 
+COLOR_INPUT_TEXT = 'white';
+COLOR_TEXT_LABELS ='green';
+
+# Create text input boxes - positioned higher and better organized
+    # Left column - labels first, then input boxes below    
+def create_label_and_input(x, y, label_text):
+    """Helper function to create a label and input axes pair."""
+    # Create label
+    label_ax = plt.axes([x, y + 0.03, 0.12, 0.02])
+    label_ax.text(0.5, 0.5, label_text, color=COLOR_TEXT_LABELS, 
+                    ha='center', va='center', transform=label_ax.transAxes)
+    label_ax.set_xticks([])
+    label_ax.set_yticks([])
+    
+    # Create input box axes
+    input_ax = plt.axes([x, y, 0.12, 0.03])
+    
+    return input_ax
+
+    
 def create_interactive_plot():
     """Create an interactive plot with text inputs for parameter control."""
     # Create figure with extra space for text boxes
@@ -71,57 +91,22 @@ def create_interactive_plot():
         except ValueError:
             pass  # Ignore invalid number inputs
     
-    # Create text input boxes - positioned higher and better organized
-    # Left column - labels first, then input boxes below
-    # Base Radius
-    ax_base_radius_label = plt.axes([0.1, 0.28, 0.12, 0.02])
-    ax_base_radius_label.text(0.5, 0.5, 'Base Radius', ha='center', va='center', transform=ax_base_radius_label.transAxes)
-    ax_base_radius_label.set_xticks([])
-    ax_base_radius_label.set_yticks([])
-    ax_base_radius = plt.axes([0.1, 0.25, 0.12, 0.03])
+    # Left column inputs
+    ax_base_radius = create_label_and_input(0.1, 0.25, 'Base Radius')
+    ax_height = create_label_and_input(0.1, 0.20, 'Height')
+    ax_max_angle = create_label_and_input(0.1, 0.15, 'Turns')
     
-    # Height
-    ax_height_label = plt.axes([0.1, 0.23, 0.12, 0.02])
-    ax_height_label.text(0.5, 0.5, 'Height', ha='center', va='center', transform=ax_height_label.transAxes)
-    ax_height_label.set_xticks([])
-    ax_height_label.set_yticks([])
-    ax_height = plt.axes([0.1, 0.20, 0.12, 0.03])
+    # Right column inputs
+    ax_cylinder_ratio = create_label_and_input(0.3, 0.25, 'Cylinder Ratio')
+    ax_taper_factor = create_label_and_input(0.3, 0.20, 'Taper Factor')
+    ax_num_lines = create_label_and_input(0.3, 0.15, 'Num Lines')
     
-    # Max Angle
-    ax_max_angle_label = plt.axes([0.1, 0.18, 0.12, 0.02])
-    ax_max_angle_label.text(0.5, 0.5, 'Turns', ha='center', va='center', transform=ax_max_angle_label.transAxes)
-    ax_max_angle_label.set_xticks([])
-    ax_max_angle_label.set_yticks([])
-    ax_max_angle = plt.axes([0.1, 0.15, 0.12, 0.03])
-    
-    # Right column
-    # Cylinder Ratio
-    ax_cylinder_ratio_label = plt.axes([0.3, 0.28, 0.12, 0.02])
-    ax_cylinder_ratio_label.text(0.5, 0.5, 'Cylinder Ratio', ha='center', va='center', transform=ax_cylinder_ratio_label.transAxes)
-    ax_cylinder_ratio_label.set_xticks([])
-    ax_cylinder_ratio_label.set_yticks([])
-    ax_cylinder_ratio = plt.axes([0.3, 0.25, 0.12, 0.03])
-    
-    # Taper Factor
-    ax_taper_factor_label = plt.axes([0.3, 0.23, 0.12, 0.02])
-    ax_taper_factor_label.text(0.5, 0.5, 'Taper Factor', ha='center', va='center', transform=ax_taper_factor_label.transAxes)
-    ax_taper_factor_label.set_xticks([])
-    ax_taper_factor_label.set_yticks([])
-    ax_taper_factor = plt.axes([0.3, 0.20, 0.12, 0.03])
-    
-    # Num Lines
-    ax_num_lines_label = plt.axes([0.3, 0.18, 0.12, 0.02])
-    ax_num_lines_label.text(0.5, 0.5, 'Num Lines', ha='center', va='center', transform=ax_num_lines_label.transAxes)
-    ax_num_lines_label.set_xticks([])
-    ax_num_lines_label.set_yticks([])
-    ax_num_lines = plt.axes([0.3, 0.15, 0.12, 0.03])
-    
-    txt_base_radius = TextBox(ax_base_radius, '', initial=str(BASE_RADIUS), color='white')
-    txt_height = TextBox(ax_height, '', initial=str(HEIGHT), color='white')
-    txt_max_angle = TextBox(ax_max_angle, '', initial=str(MAX_ROTATION_ANGLE/np.pi), color='white')
-    txt_cylinder_ratio = TextBox(ax_cylinder_ratio, '', initial=str(CYLINDER_RADIUS/BASE_RADIUS), color='white')
-    txt_taper_factor = TextBox(ax_taper_factor, '', initial=str(TAPER_FACTOR), color='white')
-    txt_num_lines = TextBox(ax_num_lines, '', initial=str(NUM_LINES), color='white')
+    txt_base_radius = TextBox(ax_base_radius, 'label', initial=str(BASE_RADIUS), color=COLOR_INPUT_TEXT)
+    txt_height = TextBox(ax_height, '', initial=str(HEIGHT), color=COLOR_INPUT_TEXT)
+    txt_max_angle = TextBox(ax_max_angle, '', initial=str(MAX_ROTATION_ANGLE/np.pi), color=COLOR_INPUT_TEXT)
+    txt_cylinder_ratio = TextBox(ax_cylinder_ratio, '', initial=str(CYLINDER_RADIUS/BASE_RADIUS), color=COLOR_INPUT_TEXT)
+    txt_taper_factor = TextBox(ax_taper_factor, '', initial=str(TAPER_FACTOR), color=COLOR_INPUT_TEXT)
+    txt_num_lines = TextBox(ax_num_lines, '', initial=str(NUM_LINES), color=COLOR_INPUT_TEXT)
     
     # Connect text boxes to update function
     txt_base_radius.on_submit(update)
