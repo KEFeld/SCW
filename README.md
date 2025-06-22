@@ -1,2 +1,3 @@
 # SCW
-Light code for the Shibari Chill Web on Borderland
+
+Spiral simulation for the Shibari Chill Web project.

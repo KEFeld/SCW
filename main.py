@@ -1,27 +1,9 @@
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from spiral_constants import *
-from spiral_utils import draw_complete_spiral, style_plot
-from spiral_widgets import create_interactive_plot, create_static_plot
+from gradio_spiral import launch_gradio_app
 
 def main():
-    """Main function to run the spiral visualization."""
-    # Choose between interactive and static plot
-    print("Spiral Visualization")
-    print("1. Interactive plot (with sliders)")
-    print("2. Static plot")
-    
-    choice = input("Enter your choice (1 or 2): ").strip()
-    
-    if choice == "1":
-        print("Creating interactive plot...")
-        create_interactive_plot()
-    elif choice == "2":
-        print("Creating static plot...")
-        create_static_plot()
-    else:
-        print("Invalid choice. Creating interactive plot by default...")
-        create_interactive_plot()
+    """Main function to run the Gradio spiral visualization."""
+    print("Starting Spiral Visualization with Gradio...")
+    launch_gradio_app(share=False, show_error=True)
 
 if __name__ == "__main__":
     main()

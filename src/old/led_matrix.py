@@ -1,5 +1,5 @@
 import numpy as np
-from .utils import perlin_noise
+from src.old.utils import perlin_noise
 class LEDMatrix:
     def __init__(self):
         self.positions = np.empty((0, 3))
