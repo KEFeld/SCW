@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from spiral_utils import draw_complete_spiral, style_plot
 from spiral_constants import *
 
-def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor, num_lines):
+def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor, num_lines, 
+                      elevation=20, azimuth=45):
     """Create a spiral plot with the given parameters for Gradio."""
     # Calculate derived parameters
     max_rotation_angle = turns * np.pi
@@ -20,6 +21,9 @@ def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor,
     # Style the plot
     style_plot(ax, fig, base_radius, height)
     
+    # Set the view angle (this only changes the camera/viewport, not the shape)
+    ax.view_init(elev=elevation, azim=azimuth)
+    
     # Add a title to show current values for debugging
     ax.set_title(f"Base Radius: {base_radius}, Height: {height}, Turns: {turns}", 
                 color='white', fontsize=12, pad=-30)
@@ -29,13 +33,13 @@ def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor,
 def create_gradio_interface():
     """Create the Gradio interface for spiral visualization."""
     with gr.Blocks(title="Spiral Visualization", theme=gr.themes.Soft()) as demo:
-        gr.Markdown("# 🌀 Interactive Spiral Visualization")
+        gr.Markdown("# Interactive Spiral Visualization")
         gr.Markdown("Adjust the parameters below to create different spiral patterns.")
         
         with gr.Row():
             with gr.Column(scale=1):
                 # Parameter controls
-                gr.Markdown("### Parameters")
+                gr.Markdown("### Spiral Parameters")
                 
                 base_radius = gr.Slider(
                     minimum=1, maximum=10, value=5, step=0.1,
@@ -67,37 +71,61 @@ def create_gradio_interface():
                     label="Number of Lines", info="Number of guiding lines"
                 )
                 
-                # Reset button
-                reset_btn = gr.Button("Reset to Defaults", variant="secondary")
+                gr.Markdown("### View Controls")
+                
+                elevation = gr.Slider(
+                    minimum=-90, maximum=90, value=20, step=1,
+                    label="Elevation", info="Vertical viewing angle (-90 to 90 degrees)"
+                )
+                
+                azimuth = gr.Slider(
+                    minimum=0, maximum=360, value=45, step=1,
+                    label="Azimuth", info="Horizontal viewing angle (0 to 360 degrees)"
+                )
+                
+                # Reset buttons
+                with gr.Row():
+                    reset_spiral_btn = gr.Button("Reset Spiral", variant="secondary")
+                    reset_view_btn = gr.Button("Reset View", variant="secondary")
             
             with gr.Column(scale=2):
                 # Plot output
                 gr.Markdown("### 3D Spiral Visualization")
                 plot_output = gr.Plot(label="Spiral Plot")
         
-        # Connect inputs to output - FIXED: Connect each input to trigger the plot update
-        inputs = [base_radius, height, turns, cylinder_ratio, taper_factor, num_lines]
+        # Connect inputs to output
+        spiral_inputs = [base_radius, height, turns, cylinder_ratio, taper_factor, num_lines]
+        view_inputs = [elevation, azimuth]
+        all_inputs = spiral_inputs + view_inputs
         
         # Connect each input to update the plot
-        for input_component in inputs:
+        for input_component in all_inputs:
             input_component.change(
                 fn=create_spiral_plot,
-                inputs=inputs,
+                inputs=all_inputs,
                 outputs=plot_output
             )
         
         # Reset functionality
-        def reset_values():
+        def reset_spiral_values():
             return [5, 8, 8, 0.2, 0.7, 8]
         
-        reset_btn.click(
-            fn=reset_values,
-            outputs=inputs
+        def reset_view_values():
+            return [20, 45]
+        
+        reset_spiral_btn.click(
+            fn=reset_spiral_values,
+            outputs=spiral_inputs
+        )
+        
+        reset_view_btn.click(
+            fn=reset_view_values,
+            outputs=view_inputs
         )
         
         # Initial plot
         demo.load(
-            fn=lambda: create_spiral_plot(5, 8, 8, 0.2, 0.7, 8),
+            fn=lambda: create_spiral_plot(5, 8, 8, 0.2, 0.7, 8, 20, 45),
             outputs=plot_output
         )
     
