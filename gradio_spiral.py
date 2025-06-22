@@ -6,22 +6,23 @@ from spiral_constants import *
 
 def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor, num_lines):
     """Create a spiral plot with the given parameters for Gradio."""
-    # Update global parameters
-    global BASE_RADIUS, HEIGHT, MAX_ROTATION_ANGLE, CYLINDER_RADIUS, TAPER_FACTOR, NUM_LINES
-    BASE_RADIUS = base_radius
-    HEIGHT = height
-    MAX_ROTATION_ANGLE = turns * np.pi
-    CYLINDER_RADIUS = base_radius * cylinder_ratio
-    TAPER_FACTOR = taper_factor
-    NUM_LINES = num_lines
+    # Calculate derived parameters
+    max_rotation_angle = turns * np.pi
+    cylinder_radius = base_radius * cylinder_ratio
     
     # Create the plot
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
     
-    # Draw the spiral
-    draw_complete_spiral(ax)
-    style_plot(ax, fig)
+    # Draw the complete spiral with current parameters
+    draw_complete_spiral(ax, base_radius, height, max_rotation_angle, cylinder_radius, taper_factor, num_lines)
+    
+    # Style the plot
+    style_plot(ax, fig, base_radius, height)
+    
+    # Add a title to show current values for debugging
+    ax.set_title(f"Base Radius: {base_radius}, Height: {height}, Turns: {turns}", 
+                color='white', fontsize=12)
     
     return fig
 
@@ -74,7 +75,7 @@ def create_gradio_interface():
                 gr.Markdown("### 3D Spiral Visualization")
                 plot_output = gr.Plot(label="Spiral Plot")
         
-        # Connect inputs to output
+        # Connect inputs to output - simple approach
         inputs = [base_radius, height, turns, cylinder_ratio, taper_factor, num_lines]
         plot_output.change(
             fn=create_spiral_plot,
