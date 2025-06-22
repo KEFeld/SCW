@@ -22,7 +22,7 @@ def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor,
     
     # Add a title to show current values for debugging
     ax.set_title(f"Base Radius: {base_radius}, Height: {height}, Turns: {turns}", 
-                color='white', fontsize=12)
+                color='white', fontsize=12, pad=-30)
     
     return fig
 
@@ -75,13 +75,16 @@ def create_gradio_interface():
                 gr.Markdown("### 3D Spiral Visualization")
                 plot_output = gr.Plot(label="Spiral Plot")
         
-        # Connect inputs to output - simple approach
+        # Connect inputs to output - FIXED: Connect each input to trigger the plot update
         inputs = [base_radius, height, turns, cylinder_ratio, taper_factor, num_lines]
-        plot_output.change(
-            fn=create_spiral_plot,
-            inputs=inputs,
-            outputs=plot_output
-        )
+        
+        # Connect each input to update the plot
+        for input_component in inputs:
+            input_component.change(
+                fn=create_spiral_plot,
+                inputs=inputs,
+                outputs=plot_output
+            )
         
         # Reset functionality
         def reset_values():
