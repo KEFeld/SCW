@@ -4,6 +4,21 @@ import matplotlib.pyplot as plt
 from spiral_utils import draw_complete_spiral, style_plot
 from spiral_constants import *
 
+# Default parameter constants
+DEFAULT_SPIRAL_PARAMS = {
+    'base_radius': 5,
+    'height': 8,
+    'turns': 8,
+    'cylinder_ratio': 0.2,
+    'taper_factor': 0.7,
+    'num_lines': 8
+}
+
+DEFAULT_VIEW_PARAMS = {
+    'elevation': 20,
+    'azimuth': 45
+}
+
 # Global variables to store the current figure and axes
 current_fig = None
 current_ax = None
@@ -50,7 +65,15 @@ def update_view_only(elevation, azimuth):
         return current_fig
     else:
         # Fallback to full redraw if no current plot exists
-        return create_spiral_plot(5, 8, 8, 0.2, 0.7, 8, elevation, azimuth)
+        return create_spiral_plot(
+            DEFAULT_SPIRAL_PARAMS['base_radius'],
+            DEFAULT_SPIRAL_PARAMS['height'],
+            DEFAULT_SPIRAL_PARAMS['turns'],
+            DEFAULT_SPIRAL_PARAMS['cylinder_ratio'],
+            DEFAULT_SPIRAL_PARAMS['taper_factor'],
+            DEFAULT_SPIRAL_PARAMS['num_lines'],
+            elevation, azimuth
+        )
 
 def create_gradio_interface():
     """Create the Gradio interface for spiral visualization."""
@@ -64,44 +87,44 @@ def create_gradio_interface():
                 gr.Markdown("### Spiral Parameters")
                 
                 base_radius = gr.Slider(
-                    minimum=1, maximum=10, value=5, step=0.2,
+                    minimum=1, maximum=10, value=DEFAULT_SPIRAL_PARAMS['base_radius'], step=0.2,
                     label="Base Radius", info="Radius at the base of the spiral"
                 )
                 
                 height = gr.Slider(
-                    minimum=5, maximum=20, value=8, step=1.0,
+                    minimum=5, maximum=20, value=DEFAULT_SPIRAL_PARAMS['height'], step=1.0,
                     label="Height", info="Height of the spiral"
                 )
                 
                 turns = gr.Slider(
-                    minimum=1, maximum=16, value=8, step=1.0,
+                    minimum=1, maximum=16, value=DEFAULT_SPIRAL_PARAMS['turns'], step=1.0,
                     label="Number of Turns", info="How many complete rotations"
                 )
                 
                 cylinder_ratio = gr.Slider(
-                    minimum=0.1, maximum=0.5, value=0.2, step=0.02,
+                    minimum=0.1, maximum=0.5, value=DEFAULT_SPIRAL_PARAMS['cylinder_ratio'], step=0.02,
                     label="Cylinder Ratio", info="Ratio of inner cylinder to base radius"
                 )
                 
                 taper_factor = gr.Slider(
-                    minimum=0.1, maximum=0.9, value=0.7, step=0.05,
+                    minimum=0.1, maximum=0.9, value=DEFAULT_SPIRAL_PARAMS['taper_factor'], step=0.05,
                     label="Taper Factor", info="How much the spiral tapers"
                 )
                 
                 num_lines = gr.Slider(
-                    minimum=4, maximum=16, value=8, step=1,
+                    minimum=4, maximum=16, value=DEFAULT_SPIRAL_PARAMS['num_lines'], step=1,
                     label="Number of Lines", info="Number of guiding lines"
                 )
                 
                 gr.Markdown("### View Controls")
                 
                 elevation = gr.Slider(
-                    minimum=-90, maximum=90, value=20, step=5,
+                    minimum=-90, maximum=90, value=DEFAULT_VIEW_PARAMS['elevation'], step=5,
                     label="Elevation", info="Vertical viewing angle (-90 to 90 degrees)"
                 )
                 
                 azimuth = gr.Slider(
-                    minimum=0, maximum=360, value=45, step=10,
+                    minimum=0, maximum=360, value=DEFAULT_VIEW_PARAMS['azimuth'], step=10,
                     label="Azimuth", info="Horizontal viewing angle (0 to 360 degrees)"
                 )
                 
@@ -137,10 +160,17 @@ def create_gradio_interface():
         
         # Reset functionality
         def reset_spiral_values():
-            return [5, 8, 8, 0.2, 0.7, 8]
+            return [
+                DEFAULT_SPIRAL_PARAMS['base_radius'],
+                DEFAULT_SPIRAL_PARAMS['height'],
+                DEFAULT_SPIRAL_PARAMS['turns'],
+                DEFAULT_SPIRAL_PARAMS['cylinder_ratio'],
+                DEFAULT_SPIRAL_PARAMS['taper_factor'],
+                DEFAULT_SPIRAL_PARAMS['num_lines']
+            ]
         
         def reset_view_values():
-            return [20, 45]
+            return [DEFAULT_VIEW_PARAMS['elevation'], DEFAULT_VIEW_PARAMS['azimuth']]
         
         reset_spiral_btn.click(
             fn=reset_spiral_values,
@@ -154,7 +184,16 @@ def create_gradio_interface():
         
         # Initial plot
         demo.load(
-            fn=lambda: create_spiral_plot(5, 8, 8, 0.2, 0.7, 8, 20, 45),
+            fn=lambda: create_spiral_plot(
+                DEFAULT_SPIRAL_PARAMS['base_radius'],
+                DEFAULT_SPIRAL_PARAMS['height'],
+                DEFAULT_SPIRAL_PARAMS['turns'],
+                DEFAULT_SPIRAL_PARAMS['cylinder_ratio'],
+                DEFAULT_SPIRAL_PARAMS['taper_factor'],
+                DEFAULT_SPIRAL_PARAMS['num_lines'],
+                DEFAULT_VIEW_PARAMS['elevation'],
+                DEFAULT_VIEW_PARAMS['azimuth']
+            ),
             outputs=plot_output
         )
     

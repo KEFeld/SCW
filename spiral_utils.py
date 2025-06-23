@@ -62,7 +62,8 @@ def draw_guiding_lines(ax, base_radius, height, taper_factor, num_lines, vertica
 def draw_spiral_radial_guidelines(ax, base_radius, height, cylinder_radius, max_rotation_angle, taper_factor, num_lines):
     """Draw radial guidelines connecting cylinder spiral to outer spiral."""
     # Calculate angles for full spiral rotation
-    angles = [i * (max_rotation_angle/num_lines) for i in range(num_lines)]
+    num_spiral_guidelines = 4* num_lines;
+    angles = [i * (max_rotation_angle/num_spiral_guidelines) for i in range(num_spiral_guidelines)]
     
     # For each angle, get points on cylinder and outer spiral
     for angle in angles:
@@ -91,8 +92,12 @@ def style_plot(ax, fig, base_radius, height):
     fig.patch.set_facecolor(BACKGROUND_COLOR)
     ax.grid(False)
     ax.axis('off')
-    ax.set_xlim((-base_radius, base_radius))
-    ax.set_ylim((-base_radius, base_radius))
+    
+    # Use fixed limits instead of scaling with base_radius
+    # This will allow you to see the actual size changes
+    max_radius = 10  # Fixed maximum radius for view
+    ax.set_xlim((-max_radius, max_radius))
+    ax.set_ylim((-max_radius, max_radius))
     ax.set_zlim((0, height))
     plt.tight_layout()
 
