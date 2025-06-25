@@ -9,7 +9,6 @@ DEFAULT_SPIRAL_PARAMS = {
     'base_radius': 5,
     'height': 8,
     'turns': 8,
-    'cylinder_ratio': 0.2,
     'taper_factor': 0.7,
     'num_lines': 8
 }
@@ -23,21 +22,20 @@ DEFAULT_VIEW_PARAMS = {
 current_fig = None
 current_ax = None
 
-def create_spiral_plot(base_radius, height, turns, cylinder_ratio, taper_factor, num_lines, 
+def create_spiral_plot(base_radius, height, turns, taper_factor, num_lines, 
                       elevation=20, azimuth=45):
     """Create a spiral plot with the given parameters for Gradio."""
     global current_fig, current_ax
     
     # Calculate derived parameters
     max_rotation_angle = turns * np.pi
-    cylinder_radius = base_radius * cylinder_ratio
     
     # Create the plot
     fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     
     # Draw the complete spiral with current parameters
-    draw_complete_spiral(ax, base_radius, height, max_rotation_angle, cylinder_radius, taper_factor, num_lines)
+    draw_complete_spiral(ax, base_radius, height, max_rotation_angle, taper_factor, num_lines)
     
     # Style the plot
     style_plot(ax, fig, base_radius, height)
@@ -69,7 +67,6 @@ def update_view_only(elevation, azimuth):
             DEFAULT_SPIRAL_PARAMS['base_radius'],
             DEFAULT_SPIRAL_PARAMS['height'],
             DEFAULT_SPIRAL_PARAMS['turns'],
-            DEFAULT_SPIRAL_PARAMS['cylinder_ratio'],
             DEFAULT_SPIRAL_PARAMS['taper_factor'],
             DEFAULT_SPIRAL_PARAMS['num_lines'],
             elevation, azimuth
@@ -99,11 +96,6 @@ def create_gradio_interface():
                 turns = gr.Slider(
                     minimum=1, maximum=16, value=DEFAULT_SPIRAL_PARAMS['turns'], step=1.0,
                     label="Number of Turns", info="How many complete rotations"
-                )
-                
-                cylinder_ratio = gr.Slider(
-                    minimum=0.1, maximum=0.5, value=DEFAULT_SPIRAL_PARAMS['cylinder_ratio'], step=0.02,
-                    label="Cylinder Ratio", info="Ratio of inner cylinder to base radius"
                 )
                 
                 taper_factor = gr.Slider(
@@ -139,7 +131,7 @@ def create_gradio_interface():
                 plot_output = gr.Plot(label="Spiral Plot")
         
         # Connect spiral parameters to full redraw
-        spiral_inputs = [base_radius, height, turns, cylinder_ratio, taper_factor, num_lines]
+        spiral_inputs = [base_radius, height, turns, taper_factor, num_lines]
         for input_component in spiral_inputs:
             input_component.change(
                 fn=create_spiral_plot,
@@ -164,7 +156,6 @@ def create_gradio_interface():
                 DEFAULT_SPIRAL_PARAMS['base_radius'],
                 DEFAULT_SPIRAL_PARAMS['height'],
                 DEFAULT_SPIRAL_PARAMS['turns'],
-                DEFAULT_SPIRAL_PARAMS['cylinder_ratio'],
                 DEFAULT_SPIRAL_PARAMS['taper_factor'],
                 DEFAULT_SPIRAL_PARAMS['num_lines']
             ]
@@ -188,7 +179,6 @@ def create_gradio_interface():
                 DEFAULT_SPIRAL_PARAMS['base_radius'],
                 DEFAULT_SPIRAL_PARAMS['height'],
                 DEFAULT_SPIRAL_PARAMS['turns'],
-                DEFAULT_SPIRAL_PARAMS['cylinder_ratio'],
                 DEFAULT_SPIRAL_PARAMS['taper_factor'],
                 DEFAULT_SPIRAL_PARAMS['num_lines'],
                 DEFAULT_VIEW_PARAMS['elevation'],

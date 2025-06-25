@@ -23,6 +23,7 @@ def generate_cap_points(base_radius, height, taper_factor, circle_points=CIRCLE_
     
     # Top cap
     top_r = base_radius * (1 - taper_factor)
+    cylinder_radius = top_r
     r_grid_top, theta_grid_top = np.meshgrid(np.linspace(0, top_r, cap_radius_points), theta)
     top_x = r_grid_top * np.cos(theta_grid_top)
     top_y = r_grid_top * np.sin(theta_grid_top)
@@ -101,8 +102,11 @@ def style_plot(ax, fig, base_radius, height):
     ax.set_zlim((0, height))
     plt.tight_layout()
 
-def draw_complete_spiral(ax, base_radius, height, max_rotation_angle, cylinder_radius, taper_factor, num_lines):
+def draw_complete_spiral(ax, base_radius, height, max_rotation_angle, taper_factor, num_lines):
     """Draw all spiral elements on the given axes with the specified parameters."""
+    # Calculate cylinder_radius from top cap
+    cylinder_radius = base_radius * (1 - taper_factor)
+    
     # Generate and plot spiral
     x, y, z = generate_spiral_points(base_radius, height, max_rotation_angle, taper_factor)
     ax.plot3D(x, y, z, color=SPIRAL_COLOR, linewidth=SPIRAL_LINE_WIDTH)
